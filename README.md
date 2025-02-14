@@ -1,4 +1,4 @@
-![Screenshot (97)](https://github.com/user-attachments/assets/87e59516-8bd4-473f-9f62-44486f819c38)LMS
+
 Sure! Here's a short description you can use for your LMS website on your GitHub repository:
 
 Title: Learning Management System (LMS) – CloudAI Apex

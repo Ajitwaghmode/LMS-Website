@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webinars</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        h2 {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .tabs {
+            display: flex;
+            gap: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .tab {
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px;
+            color: #777;
+        }
+        .tab.active {
+            border-bottom: 3px solid black;
+            color: black;
+        }
+        .webinar-grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .webinar-card {
+            width: 30%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .webinar-card:hover {
+            transform: scale(1.02);
+        }
+        .webinar-image {
+            width: 100%;
+            height: 180px;
+            position: relative;
+        }
+        .webinar-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .webinar-details {
+            padding: 15px;
+        }
+        .webinar-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .webinar-date {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .webinar-price {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            background: #ccc;
+        }
+        @media (max-width: 768px) {
+            .webinar-grid {
+                flex-direction: column;
+            }
+            .webinar-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Webinars</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="filterWebinars('all', event)">All</div>
+            <div class="tab" onclick="filterWebinars('upcoming', event)">Upcoming</div>
+            <div class="tab" onclick="filterWebinars('past', event)">Past</div>
+        </div>
+        <div class="webinar-grid" id="webinarList"></div>
+        <div class="pagination">
+            <button id="prevPage" onclick="changePage(-1)" disabled>Previous</button>
+            <button id="nextPage" onclick="changePage(1)">Next</button>
+        </div>
+    </div>
+    <script>
+        let webinars = [];
+        let filteredWebinars = [];
+        let currentPage = 0;
+        const itemsPerPage = 6;
+
+        async function fetchWebinars() {
+            webinars = [
+                { title: "Become Databricks Data Engineer", date: "2024-08-11", price: "₹100", image: "http://lms.cloudaiapex.com/wp-content/uploads/2025/02/DALL·E-2025-02-10-11.52.26-A-sleek-and-modern-UI_UX-card-design-for-Data-Analytics.-The-card-should-have-a-futuristic-data-visualization-theme-with-a-clean-blue-and-green-back.webp" },
+                { title: "Python for Data Science", date: "2024-08-20", price: "₹200", image: "http://lms.cloudaiapex.com/wp-content/uploads/2025/02/DALL·E-2025-02-10-11.52.15-A-sleek-and-modern-UI_UX-card-design-for-Machine-Learning.-The-card-should-have-a-futuristic-AI-theme-with-a-glowing-blue-and-purple-background-inc.webp" },
+                { title: "Become Databricks Data Engineer", date: "2024-08-11", price: "₹100", image: "http://lms.cloudaiapex.com/wp-content/uploads/2025/02/DALL·E-2025-02-10-11.52.42-A-sleek-and-modern-UI_UX-card-design-for-Data-Science.-The-card-should-have-an-advanced-AI-driven-theme-with-a-futuristic-blue-and-purple-background.webp" },
+                { title: "Power BI Essentials", date: "2024-08-22", price: "₹150", image: "http://lms.cloudaiapex.com/wp-content/uploads/2025/02/DALL·E-2025-02-10-11.52.05-A-sleek-and-modern-UI_UX-card-design-for-Data-Engineer.-The-card-should-have-a-futuristic-tech-theme-with-a-glowing-blue-background-incorporating-e.webp" }
+            ];
+            filterWebinars('all');
+        }
+
+        function filterWebinars(type, event = null) {
+            const now = new Date().toISOString().split('T')[0];
+            if (event) {
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                event.target.classList.add('active');
+            }
+
+            if (type === 'upcoming') {
+                filteredWebinars = webinars.filter(w => w.date >= now);
+            } else if (type === 'past') {
+                filteredWebinars = webinars.filter(w => w.date < now);
+            } else {
+                filteredWebinars = webinars;
+            }
+            currentPage = 0;
+            renderWebinars();
+        }
+
+        function renderWebinars() {
+            const list = document.getElementById("webinarList");
+            list.innerHTML = "";
+            const start = currentPage * itemsPerPage;
+            const paginatedWebinars = filteredWebinars.slice(start, start + itemsPerPage);
+
+            paginatedWebinars.forEach(webinar => {
+                list.innerHTML += `
+                    <div class="webinar-card">
+                        <div class="webinar-image">
+                            <img src="${webinar.image}" alt="Webinar">
+                        </div>
+                        <div class="webinar-details">
+                            <div class="webinar-title">${webinar.title}</div>
+                            <div class="webinar-date">📅 ${webinar.date}</div>
+                            <div class="webinar-price">${webinar.price}</div>
+                        </div>
+                    </div>`;
+            });
+            updatePagination();
+        }
+
+        function updatePagination() {
+            document.getElementById("prevPage").disabled = currentPage === 0;
+            document.getElementById("nextPage").disabled = (currentPage + 1) * itemsPerPage >= filteredWebinars.length;
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderWebinars();
+        }
+
+        fetchWebinars();
+    </script>
+</body>
+</html>

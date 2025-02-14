@@ -6,7 +6,7 @@ Title: Learning Management System (LMS) – CloudAI Apex
 Description:
 This is a feature-rich Learning Management System (LMS) built for seamless online education and training. It supports user authentication, course management, progress tracking, and social login integration (Google, Facebook, etc.). Designed for scalability and performance, this LMS provides an intuitive experience for both learners and instructors.
 
-🚀 Live Website: LMS.CloudAIApex.com
+🚀 Live Website: https://lms.cloudaiapex.com/
 📂 Technologies Used: WordPress, Super Socializer, PHP, MySQL
 
 Let me know if you need modifications! 🚀![Screenshot (94)](https://github.com/user-attachments/assets/cd9ff78d-2d24-45ba-861f-f2b2fe8532a3)
